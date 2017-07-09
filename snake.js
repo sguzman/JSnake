@@ -12,6 +12,9 @@ const keyInput$ = keyUp$.merge(keyDown$).merge(keyLeft$).merge(keyRight$).subscr
 const canvas = document.getElementById('canvas');
 const context = canvas.getContext('2d');
 
+const bgColor = 'black';
+
+const moveUnits = 1;
 const waitTimeBetweenFrames = 20;
 const widthOfSnake = 10;
 
@@ -19,7 +22,7 @@ function rgbFromValues(red, green, blue) {
     return `rgb(${red},${green},${blue})`;
 }
 
-function square(_x, _y, _r) {
+function square(_x, _y, _r = 5) {
     return {
         x: _x,
         y: _y,
@@ -36,10 +39,20 @@ function square(_x, _y, _r) {
     };
 }
 
-let snake = [square(0, 0, 10)];
+const initX = canvas.width / 2;
+const initY = canvas.height / 2;
+
+let snake = square(initX, initY);
 let direction = [0,-1];
 
-let food = {
-    x: Math.random() * canvas.width,
-    y: Math.random() * canvas.height
-};
+const gameLoop$ = Rx.Observable.interval(waitTimeBetweenFrames).subscribe(() => {
+    context.clearRect(0, 0, canvas.width, canvas.height);
+
+    context.fillStyle = bgColor;
+    context.fillRect(0, 0, canvas.width, canvas.height);
+
+    snake.x += direction[0];
+    snake.y += direction[1];
+
+    snake.render();
+});
