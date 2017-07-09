@@ -15,8 +15,6 @@ const context = canvas.getContext('2d');
 const waitTimeBetweenFrames = 20;
 const widthOfSnake = 10;
 
-let direction = [0,-1];
-
 function rgbFromValues(red, green, blue) {
     return `rgb(${red},${green},${blue})`;
 }
@@ -26,7 +24,7 @@ function square(_x, _y, _r) {
         x: _x,
         y: _y,
         r: _r,
-        color: rgbFromValues(255 * Math.random(), 255 * Math.random(), 255 * Math.random()),
+        color: rgbFromValues.apply(null, [0,0,0].map(s => Math.floor(255 * Math.random()))),
         render() {
             const preColor = context.fillStyle;
             context.fillStyle = this.color;
@@ -38,7 +36,8 @@ function square(_x, _y, _r) {
     };
 }
 
-let snake = [square(0, 0)];
+let snake = [square(0, 0, 10)];
+let direction = [0,-1];
 
 let food = {
     x: Math.random() * canvas.width,
