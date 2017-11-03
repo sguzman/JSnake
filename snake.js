@@ -21,6 +21,10 @@
         return `rgb(${red},${green},${blue})`;
     }
 
+    function randomUpto(number) {
+        return Math.floor(number * Math.random());
+    }
+
     function square(_x, _y, _r = widthOfSnake) {
         return {
             x: _x,
