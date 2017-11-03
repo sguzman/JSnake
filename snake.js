@@ -48,6 +48,9 @@
     let snake = square(initX, initY);
     let direction = [0,-1];
 
+    let food = square(randomUpto(canvas.width), randomUpto(canvas.height));
+    food.color = 'rgb(255,255,255)';
+
     const keyInput$ = keyUp$.merge(keyDown$).merge(keyLeft$).merge(keyRight$).subscribe(s => direction = s);
 
     const gameLoop$ = Rx.Observable.interval(waitTimeBetweenFrames);
