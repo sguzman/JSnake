@@ -47,7 +47,7 @@
         return squareOverlapOf(sq1, sq2, 'x') && squareOverlapOf(sq1, sq2, 'y');
     }
 
-    function square(_x, _y, _r = widthOfSquare) {
+    function Square(_x, _y, _r = widthOfSquare) {
         return {
             x: _x,
             y: _y,
@@ -67,10 +67,10 @@
     const initX = canvas.width / 2;
     const initY = canvas.height / 2;
 
-    let snake = square(initX, initY);
+    let snake = new Square(initX, initY);
     let direction = [0,-1];
 
-    let food = square(randomUpto(canvas.width), randomUpto(canvas.height));
+    let food = new Square(randomUpto(canvas.width), randomUpto(canvas.height));
     food.color = 'rgb(255,255,255)';
 
     const keyInput$ = keyUp$.merge(keyDown$).merge(keyLeft$).merge(keyRight$).subscribe(s => direction = s);
