@@ -86,7 +86,10 @@
     const foodCollide$ = collision$.merge(noCollision$).distinctUntilChanged();
 
     foodCollide$.subscribe(s => {
-        console.log(s);
+        if (s) {
+            food = new Square(randomUpto(canvas.width), randomUpto(canvas.height));
+            food.color = 'rgb(255,255,255)';
+        }
     });
 
     gameLoop$.subscribe(() => {
