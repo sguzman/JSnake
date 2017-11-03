@@ -13,7 +13,7 @@
 
     const bgColor = 'black';
 
-    const waitTimeBetweenFrames = 200;
+    const waitTimeBetweenFrames = 125;
     const widthOfSnake = 5;
     const moveUnits = widthOfSnake;
 
