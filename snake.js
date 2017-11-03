@@ -73,10 +73,9 @@
     let food = new Square(randomUpto(canvas.width), randomUpto(canvas.height));
     food.color = 'rgb(255,255,255)';
 
-    const keyInput$ = keyUp$.merge(keyDown$).merge(keyLeft$).merge(keyRight$).subscribe(s => direction = s);
-
     const gameLoop$ = Rx.Observable.interval(waitTimeBetweenFrames);
 
+    keyUp$.merge(keyDown$).merge(keyLeft$).merge(keyRight$).subscribe(s => direction = s);
     gameLoop$.map(s => snake.x > canvas.width).distinctUntilChanged().filter(s => s).subscribe(s => snake.x = 0);
     gameLoop$.map(s => snake.x < 0).distinctUntilChanged().filter(s => s).subscribe(s => snake.x = canvas.width);
     gameLoop$.map(s => snake.y < 0).distinctUntilChanged().filter(s => s).subscribe(s => snake.y = canvas.height);
