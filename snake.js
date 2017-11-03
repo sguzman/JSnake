@@ -30,7 +30,7 @@
             x: _x,
             y: _y,
             r: _r,
-            color: rgbFromValues.apply(null, [0,0,0].map(s => Math.floor(255 * Math.random()))),
+            color: rgbFromValues.apply(null, [null, null, null].map(s => randomUpto(255))),
             render() {
                 const preColor = context.fillStyle;
                 context.fillStyle = this.color;
