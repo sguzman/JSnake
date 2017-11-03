@@ -14,8 +14,8 @@
     const bgColor = 'black';
 
     const waitTimeBetweenFrames = 125;
-    const widthOfSnake = 5;
-    const moveUnits = widthOfSnake;
+    const widthOfSquare = 5;
+    const moveUnits = widthOfSquare;
 
     function rgbFromValues(red, green, blue) {
         return `rgb(${red},${green},${blue})`;
@@ -25,7 +25,29 @@
         return Math.floor(number * Math.random());
     }
 
-    function square(_x, _y, _r = widthOfSnake) {
+    function overlap(x1, x2, y1, y2) {
+        if (y1 > x1) {
+            return overlap(y1, y2, x1, x2);
+        }
+
+        return x1 <= y2 && y1 <= x2;
+    }
+
+    function squareOverlapOf(sq1, sq2, prop) {
+        const x1 = sq1[prop];
+        const x2 = sq1[prop] + widthOfSquare;
+
+        const y1 = sq2[prop];
+        const y2 = sq2[prop] + widthOfSquare;
+
+        return overlap(x1, x2, y1, y2);
+    }
+
+    function squareOverlap(sq1, sq2) {
+        return squareOverlapOf(sq1, sq2, 'x') && squareOverlapOf(sq1, sq2, 'y');
+    }
+
+    function square(_x, _y, _r = widthOfSquare) {
         return {
             x: _x,
             y: _y,
@@ -55,10 +77,18 @@
 
     const gameLoop$ = Rx.Observable.interval(waitTimeBetweenFrames);
 
-    const overflowRight$ = gameLoop$.map(s => snake.x > canvas.width).distinctUntilChanged().filter(s => s).subscribe(s => snake.x = 0);
-    const overflowLeft$ = gameLoop$.map(s => snake.x < 0).distinctUntilChanged().filter(s => s).subscribe(s => snake.x = canvas.width);
-    const overflowUp$ = gameLoop$.map(s => snake.y < 0).distinctUntilChanged().filter(s => s).subscribe(s => snake.y = canvas.height);
-    const overflowDown$ = gameLoop$.map(s => snake.y > canvas.height).distinctUntilChanged().filter(s => s).subscribe(s => snake.y = 0);
+    gameLoop$.map(s => snake.x > canvas.width).distinctUntilChanged().filter(s => s).subscribe(s => snake.x = 0);
+    gameLoop$.map(s => snake.x < 0).distinctUntilChanged().filter(s => s).subscribe(s => snake.x = canvas.width);
+    gameLoop$.map(s => snake.y < 0).distinctUntilChanged().filter(s => s).subscribe(s => snake.y = canvas.height);
+    gameLoop$.map(s => snake.y > canvas.height).distinctUntilChanged().filter(s => s).subscribe(s => snake.y = 0);
+
+    const collision$ = gameLoop$.filter(s => squareOverlap(snake, food)).mapTo(true);
+    const noCollision$ = gameLoop$.filter(s => !squareOverlap(snake, food)).mapTo(false);
+    const foodCollide$ = collision$.merge(noCollision$).distinctUntilChanged();
+
+    foodCollide$.subscribe(s => {
+        console.log(s);
+    });
 
     gameLoop$.subscribe(() => {
         context.clearRect(0, 0, canvas.width, canvas.height);
@@ -69,6 +99,7 @@
         snake.x += direction[0] * moveUnits;
         snake.y += direction[1] * moveUnits;
 
+        food.render();
         snake.render();
     });
 
